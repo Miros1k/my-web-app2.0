@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Расписание занятий</title>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+            background-color: #f7f9fc;
+        }
+        h1 {
+            color: #333;
+        }
+        #timetable {
+            margin-top: 20px;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        th, td {
+            border: 1px solid #ddd;
+            padding: 8px;
+            text-align: left;
+        }
+        th {
+            background-color: #4CAF50;
+            color: white;
+        }
+    </style>
+</head>
+<body>
+    <h1>Расписание занятий</h1>
+    <div id="timetable">Загрузка расписания...</div>
+
+    <script>
+        function fetchTimetable() {
+            $.ajax({
+                url: 'https://menu.sttec.yar.ru/timetable/rasp_first.html', // URL для получения расписания
+                method: 'GET',
+                success: function(data) {
+                    // Обработка и отображение данных
+                    displayTimetable(data);
+                },
+                error: function(err) {
+                    $('#timetable').html('Ошибка при загрузке расписания. Попробуйте позже.');
+                    console.error('Ошибка при загрузке расписания:', err);
+                }
+            });
+        }
+
+        function displayTimetable(data) {
+            // Простой способ извлечь нужные данные
+            const parser = new DOMParser();
+            const doc = parser.parseFromString(data, 'text/html');
+            const timetableContent = doc.querySelector('body').innerHTML; // Это просто пример
+
+            // Здесь можно заменить с более конкретной логикой, если есть структура таблицы
+            $('#timetable').html(timetableContent); // Обновляем содержимое
+        }
+
+        // Первоначальная загрузка
+        fetchTimetable();
+
+        // Периодическое обновление каждые 5 минут (300000 мс)
+        setInterval(fetchTimetable, 300000);
+    </script>
+</body>
+</html>
